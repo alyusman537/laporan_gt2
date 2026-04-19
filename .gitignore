@@ -1,0 +1,35 @@
+# Dependencies
+/node_modules
+/jspm_packages
+
+# Optional npm cache files
+.npm
+
+# Temporary files
+/tmp
+
+# Logs
+/logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# IDEs and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Build artifacts
+/dist
+/build
+e.g. *.tgz
+
+# Testing
+/coverage
