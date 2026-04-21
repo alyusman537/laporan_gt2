@@ -7,6 +7,7 @@ import { roleMiddleware } from '../middleware/roleMiddleware.js';
 import { pjgtController } from '../controllers/pjgtController.js';
 import { gtController } from '../controllers/gtController.js';
 import { tahunAjaranController } from '../controllers/tahunAjaranController.js';
+import { tugasController } from '../controllers/tugasController.js';
 
 export const router = express.Router();
 const pjgtSchema = ["nama", "nikPjgt", "hpPjgt", "namaKm", "hpKm", "alamatMadrasah"];
@@ -37,6 +38,9 @@ router.get("/tahun-ajaran/:id", authenticate, roleMiddleware.admin, tahunAjaranC
 router.post("/tahun-ajaran", authenticate, validateBody(["keterangan"]), roleMiddleware.admin, tahunAjaranController.create);
 router.put("/tahun-ajaran/:id", authenticate, validateBody(["keterangan"]), roleMiddleware.admin,tahunAjaranController.update);
 router.get("/tahun-ajaran-aktif/:id", authenticate, roleMiddleware.admin, tahunAjaranController.aktif);
+
+router.get("/tugas", authenticate, roleMiddleware.admin, tugasController.all);
+router.get("/tugas/:id", authenticate, roleMiddleware.admin, tugasController.byId);
 
 //PJGT
 router.put("/pjgt/change-password/:id", authenticate, roleMiddleware.pjgt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), pjgtController.changePassword);
