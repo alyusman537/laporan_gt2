@@ -75,8 +75,7 @@ const initDb = async () => {
             id TEXT PRIMARY KEY,
             keterangan TEXT NOT NULL UNIQUE,
             aktif BOOLEAN DEFAULT 0,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            created_by TEXT NOT NULL
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )`;
     await db.execute(tahunQuery);
 
@@ -85,12 +84,10 @@ const initDb = async () => {
             id_tahun_ajaran TEXT NOT NULL,
             id_pjgt TEXT NOT NULL,
             id_gt TEXT NOT NULL,
-            jenis_penugasan TEXT,
+            jenis_penugasan TEXT CHECK(jenis_penugasan in("wajib", "tatowuk")),
             aktif BOOLEAN DEFAULT 1,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            created_by TEXT NOT NULL,
-            updated_by TEXT NOT NULL,
             FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id),
             FOREIGN KEY (id_pjgt) REFERENCES pjgt (id),
             FOREIGN KEY (id_gt) REFERENCES gt (id)

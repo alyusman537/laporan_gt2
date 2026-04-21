@@ -1,5 +1,8 @@
+import { v4 as uuidv4 } from "uuid";
 import db from "../config/db.js"
+import { tanggal } from "../utils/tanggal.js"
 
+const tanggalJam = tanggal.getYmdhis();
 export const tugasService = {
     all: async () => {
         const result = await db.execute(`SELECT t.*, a.keterangan FROM tugas t LEFT JOIN tahun_ajaran a ON t.id_tahun_ajaran=a.id ORDER BY a.keterangan DESC, t.created_at ASC`)
@@ -11,5 +14,27 @@ export const tugasService = {
             args: [id]
         })
         return result.rows
-    }
+    },
+    create: async (data) => {
+        const id = uuidv4();
+        await db.execute({
+            sql: `INSERT INTO tugas (id, id_tahun_ajaran, id_pjgt, id_gt, jenis_penugasan) VALUES (?, ?, ?, ?, ?)`,
+            args: [id, data.idTahunAjaran, data.idPjgt, data.idGt, data.jenisPenugasan]
+        })
+        return { id: id, ...data }
+    },
+    update: async (data, id) => {
+        await db.execute({
+            sql: `UPDATE tugas SET id_tahun_ajaran=?, id_pjgt=?, id_gt=?, jenis_penugasan=?, updated_at=? WHERE id=?`,
+            args: [data.idTahunAjaran, data.idPjgt, data.idGt, data.jenisPenugasan, tanggalJam, id]
+        })
+        return { id: id, ...data }
+    },
+    delete: async (id) => {
+        await db.execute({
+            sql: `UPDATE tugas SET aktif=0, updated_at=? WHERE id=?`,
+            args: [tanggalJam, id]
+        })
+        return { pesan: `id penugasan ${id} telah dihapus` }
+    },
 }

@@ -12,6 +12,7 @@ import { tugasController } from '../controllers/tugasController.js';
 export const router = express.Router();
 const pjgtSchema = ["nama", "nikPjgt", "hpPjgt", "namaKm", "hpKm", "alamatMadrasah"];
 const gtSchema = ["nim", "nama", "nik", "tempatLahir", "tanggalLahir", "alamat", "hp", "namaAyah", "namaIbu", "namaWali", "hpWali", "asalKelas", "waliKelas"];
+const tugasSchema = ["idTahunAjaran", "idPjgt", "idGt", "jenisPenugasan"];
 
 router.post("/login", validateBody(["username", "role", "password"]), authController.login);
 
@@ -41,6 +42,9 @@ router.get("/tahun-ajaran-aktif/:id", authenticate, roleMiddleware.admin, tahunA
 
 router.get("/tugas", authenticate, roleMiddleware.admin, tugasController.all);
 router.get("/tugas/:id", authenticate, roleMiddleware.admin, tugasController.byId);
+router.post("/tugas", authenticate, roleMiddleware.admin, validateBody(tugasSchema), tugasController.create);
+router.put("/tugas/:id", authenticate, roleMiddleware.admin, validateBody(tugasSchema), tugasController.update);
+router.delete("/tugas/:id", authenticate, roleMiddleware.admin, tugasController.delete);
 
 //PJGT
 router.put("/pjgt/change-password/:id", authenticate, roleMiddleware.pjgt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), pjgtController.changePassword);
