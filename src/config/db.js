@@ -16,7 +16,7 @@ const initDb = async () => {
     const queryUser = `CREATE TABLE IF NOT EXISTS users (
             id TEXT PRIMARY KEY,
             username TEXT NOT NULL UNIQUE,
-            fullname TEXT NOT NULL,
+            nama TEXT NOT NULL,
             password TEXT NOT NULL,
             role TEXT DEFAULT 'admin',
             aktif BOOLEAN DEFAULT 1
@@ -27,8 +27,8 @@ const initDb = async () => {
     const pass = bcrypt.hashSync("awikfuad", salt);
     const idAdmin = uuidv4();
     await db.execute({
-        sql: `INSERT OR IGNORE INTO users (id, username, fullname, password) VALUES (?, ?, ?, ?)`,
-        args: [idAdmin, 'admin', 'administrator', pass]
+        sql: `INSERT OR IGNORE INTO users (id, username, nama, password) VALUES (?, ?, ?, ?)`,
+        args: [idAdmin, 'admin', 'admin', pass]
     });
 
     const pjgtQuery = `CREATE TABLE IF NOT EXISTS pjgt (
@@ -36,8 +36,8 @@ const initDb = async () => {
             username TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             role TEXT DEFAULT 'pjgt',
-            nama_pjgt TEXT NOT NULL,
-            nik_pjgt TEXT NOT NULL  UNIQUE,
+            nama TEXT NOT NULL,
+            nik_pjgt TEXT NOT NULL UNIQUE,
             hp_pjgt TEXT NOT NULL,
             nama_km TEXT NOT NULL,
             hp_km TEXT,
@@ -73,8 +73,8 @@ const initDb = async () => {
 
     const tahunQuery = `CREATE TABLE IF NOT EXISTS tahun_ajaran (
             id TEXT PRIMARY KEY,
-            keterangan TEXT NOT NULL,
-            aktif BOOLEAN DEFAULT 1,
+            keterangan TEXT NOT NULL UNIQUE,
+            aktif BOOLEAN DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             created_by TEXT NOT NULL
         )`;

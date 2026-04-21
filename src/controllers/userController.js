@@ -8,10 +8,10 @@ export const userController = {
             res.status(200).json(users);
         } catch (error) {
             if (error instanceof LibsqlError) {
-                console.error(`libSQL Error: ${error.code} - ${error.message}`);
+                res.status(500).json({success: false, message: `libSQL Error: ${error.code} - ${error.message}`});
                 // Example codes: "URL_INVALID", "SERVER_ERROR", "SQL_ERROR"
             } else {
-                console.error("An unexpected error occurred:", error);
+                res.status(500).json({success: false, message: `An unexpected error occurred: ${error}`});
             }
         }
     },
@@ -22,10 +22,10 @@ export const userController = {
             res.status(200).json(users);
         } catch (error) {
             if (error instanceof LibsqlError) {
-                console.error(`libSQL Error: ${error.code} - ${error.message}`);
+                res.status(500).json({success: false, message: `libSQL Error: ${error.code} - ${error.message}`});
                 // Example codes: "URL_INVALID", "SERVER_ERROR", "SQL_ERROR"
             } else {
-                console.error("An unexpected error occurred:", error);
+                res.status(500).json({success: false, message: `An unexpected error occurred: ${error}`});
             }
         }
     },
