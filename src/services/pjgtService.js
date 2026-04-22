@@ -21,12 +21,12 @@ export const pjgtService = {
         });
         return result.rows[0]
     },
-    create: async (data) => {
+    create: async (username, password, data) => {
         const id = uuidv4();
         await db.execute({
             sql: `INSERT INTO pjgt (id, username, password, nama, nik_pjgt,
-            hp_pjgt, nama_km, hp_km, alamat_madrasah) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            args: [id, data.username, data.password, data.nama, data.nikPjgt, data.hpPjgt, data.namaKm, data.hpKm, data.alamatMadrasah]
+            hp_pjgt, nama_km, hp_km,nama_madrasah, alamat_madrasah) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            args: [id, username, password, data.nama, data.nikPjgt, data.hpPjgt, data.namaKm, data.hpKm, data.namaMadrasah, data.alamatMadrasah]
         })
         return { id: id, ...data }
     },

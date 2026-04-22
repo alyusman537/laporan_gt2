@@ -30,21 +30,10 @@ export const pjgtController = {
     },
     create: async (req, res) => {
         try {
-            const { nama, nikPjgt, hpPjgt, namaKm, hpKm, alamatMadrasah } = req.body;
             const idPjgt = await pjgtService.autoId();
-            console.log("id pjgt ", idPjgt);
+            const password = passwordBcrypt.enkrip(idPjgt);
             
-            const data = {
-                username: idPjgt,
-                password: passwordBcrypt.enkrip(idPjgt),
-                nama: nama,
-                nikPjgt: nikPjgt,
-                hpPjgt: hpPjgt,
-                namaKm: namaKm,
-                hpKm: hpKm,
-                alamatMadrasah: alamatMadrasah
-            }
-            const hasil = await pjgtService.create(data);
+            const hasil = await pjgtService.create(idPjgt, password, req.body);
             res.status(201).json({ success: true, data: hasil });
         } catch (error) {
             if (error instanceof LibsqlError) {
@@ -56,17 +45,8 @@ export const pjgtController = {
     },
     update: async (req, res) => {
         try {
-            const { nama, nikPjgt, hpPjgt, namaKm, hpKm, alamatMadrasah } = req.body;
             const { id } = req.params;
-            const data = {
-                nama: nama,
-                nikPjgt: nikPjgt,
-                hpPjgt: hpPjgt,
-                namaKm: namaKm,
-                hpKm: hpKm,
-                alamatMadrasah: alamatMadrasah
-            }
-            const hasil = await pjgtService.update(id, data);
+            const hasil = await pjgtService.update(id, req.body);
             res.status(200).json({ success: true, data: hasil });
         } catch (error) {
             if (error instanceof LibsqlError) {

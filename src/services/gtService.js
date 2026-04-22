@@ -15,13 +15,13 @@ export const gtService = {
         });
         return result.rows[0]
     },
-    create: async (data) => {
+    create: async (nim, password, data) => {
         const id = uuidv4();
         await db.execute({
             sql: `INSERT INTO gt (id, nim, password, nama, nik,
             tempat_lahir, tanggal_lahir, alamat, hp, nama_ayah,
             nama_ibu, nama_wali, hp_wali, asal_kelas, wali_kelas) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
-            args: [id, data.nim, data.password, data.nama, data.nik, data.tempatLahir, data.tanggalLahir, data.alamat, data.hp, data.namaAyah, data.namaIbu, data.namaWali, data.hpWali, data.asalKelas, data.waliKelas]
+            args: [id, nim, password, data.nama, data.nik, data.tempatLahir, data.tanggalLahir, data.alamat, data.hp, data.namaAyah, data.namaIbu, data.namaWali, data.hpWali, data.asalKelas, data.waliKelas]
         })
         return { id: id, ...data }
     },

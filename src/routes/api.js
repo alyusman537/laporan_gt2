@@ -8,11 +8,13 @@ import { pjgtController } from '../controllers/pjgtController.js';
 import { gtController } from '../controllers/gtController.js';
 import { tahunAjaranController } from '../controllers/tahunAjaranController.js';
 import { tugasController } from '../controllers/tugasController.js';
+import { laporanGtController } from '../controllers/laporanGtController.js';
 
 export const router = express.Router();
-const pjgtSchema = ["nama", "nikPjgt", "hpPjgt", "namaKm", "hpKm", "alamatMadrasah"];
+const pjgtSchema = ["nama", "nikPjgt", "hpPjgt", "namaKm", "hpKm", "namaMadrasah", "alamatMadrasah"];
 const gtSchema = ["nim", "nama", "nik", "tempatLahir", "tanggalLahir", "alamat", "hp", "namaAyah", "namaIbu", "namaWali", "hpWali", "asalKelas", "waliKelas"];
 const tugasSchema = ["idTahunAjaran", "idPjgt", "idGt", "jenisPenugasan"];
+const laporanGtSchema = ["bulan_ke", "statusKelas", "waliKelas", "guruFak", "jkMurid", "kedisiplinanGt", "kegiatanGt", "rambutGt", "suratIzinDigunakan", "pergiGt", "pulangGt", "pelanggaranGt", "hubunganPjgt", "hubunganKm", "hubunganGuru", "hubunganMuridKelas", "hubunganMuridLuarKelas", "tanggapanMurid", "bisyaroh"]
 
 router.post("/login", validateBody(["username", "role", "password"]), authController.login);
 
@@ -51,5 +53,8 @@ router.put("/pjgt/change-password/:id", authenticate, roleMiddleware.pjgt, valid
 
 //GT
 router.put("/gt/change-password/:id", authenticate, roleMiddleware.gt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), gtController.changePassword);
+router.post("/laporan-gt", authenticate, roleMiddleware.gt, validateBody(laporanGtSchema), laporanGtController.create);
 
 //LOGIN
+router.get("/laporan-gt/tahunan/:tahun", authenticate, laporanGtController.tahun);
+router.get("/laporan-gt/bulanan/:tahun/:bulan", authenticate, laporanGtController.bulan);

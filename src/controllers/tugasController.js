@@ -37,7 +37,8 @@ export const tugasController = {
                 idTahunAjaran: idTahunAjaran,
                 idPjgt: idPjgt,
                 idGt: idGt,
-                jenisPenugasan: jenisPenugasan
+                jenisPenugasan: jenisPenugasan,
+                userId: req.user.id
             }
             const ta = await tahunAjaranService.byId(idTahunAjaran);
             const pjgt = await pjgtService.byId(idPjgt);

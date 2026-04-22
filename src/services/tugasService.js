@@ -13,12 +13,28 @@ export const tugasService = {
             sql: `SELECT t.*, a.keterangan FROM tugas t LEFT JOIN tahun_ajaran a ON t.id_tahun_ajaran=a.id WHERE t.id=?`,
             args: [id]
         })
-        return result.rows
+        return result.rows[0]
+    },
+    byGt: async (idGt) => {
+        const result = await db.execute({
+            sql: `SELECT t.*, a.keterangan FROM tugas t LEFT JOIN tahun_ajaran a ON t.id_tahun_ajaran=a.id WHERE t.id_gt=? and t.aktif=1`,
+            args: [idGt]
+        })
+        return result.rows[0]
+    },
+        byPjgt: async (idPjgt) => {
+        const result = await db.execute({
+            sql: `SELECT t.*, a.keterangan FROM tugas t LEFT JOIN tahun_ajaran a ON t.id_tahun_ajaran=a.id WHERE t.id_pjgt=? and t.aktif=1`,
+            args: [idPjgt]
+        })
+        return result.rows[0]
     },
     create: async (data) => {
         const id = uuidv4();
         await db.execute({
-            sql: `INSERT INTO tugas (id, id_tahun_ajaran, id_pjgt, id_gt, jenis_penugasan) VALUES (?, ?, ?, ?, ?)`,
+            sql: `INSERT INTO tugas
+            (id, id_tahun_ajaran, id_pjgt, id_gt, jenis_penugasan)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
             args: [id, data.idTahunAjaran, data.idPjgt, data.idGt, data.jenisPenugasan]
         })
         return { id: id, ...data }

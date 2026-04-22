@@ -30,27 +30,8 @@ export const gtController = {
     },
     create: async (req, res) => {
         try {
-            const { nim, nama, nik,
-            tempatLahir, tanggalLahir, alamat, hp, namaAyah,
-            namaIbu, namaWali, hpWali, asalKelas, waliKelas } = req.body;
-            
-            const data = {
-                nim: nim,
-                password: passwordBcrypt.enkrip(nim),
-                nama: nama,
-                nik: nik,
-                tempatLahir: tempatLahir,
-                tanggalLahir: tanggalLahir,
-                alamat: alamat,
-                hp: hp,
-                namaAyah: namaAyah,
-                namaIbu: namaIbu,
-                namaWali: namaWali,
-                hpWali: hpWali,
-                asalKelas: asalKelas,
-                waliKelas: waliKelas
-            }
-            const hasil = await gtService.create(data);
+            const { nim } = req.body;
+            const hasil = await gtService.create(nim, passwordBcrypt.enkrip(nim), req.body);
             res.status(201).json({ success: true, data: hasil });
         } catch (error) {
             if (error instanceof LibsqlError) {
@@ -63,25 +44,7 @@ export const gtController = {
     update: async (req, res) => {
         try {
             const { id } = req.params;
-            const { nama, nik,
-            tempatLahir, tanggalLahir, alamat, hp, namaAyah,
-            namaIbu, namaWali, hpWali, asalKelas, waliKelas } = req.body;
-            
-            const data = {
-                nama: nama,
-                nik: nik,
-                tempatLahir: tempatLahir,
-                tanggalLahir: tanggalLahir,
-                alamat: alamat,
-                hp: hp,
-                namaAyah: namaAyah,
-                namaIbu: namaIbu,
-                namaWali: namaWali,
-                hpWali: hpWali,
-                asalKelas: asalKelas,
-                waliKelas: waliKelas
-            }
-            const hasil = await gtService.update(id, data);
+            const hasil = await gtService.update(id, req.body);
             res.status(200).json({ success: true, data: hasil });
         } catch (error) {
             if (error instanceof LibsqlError) {
