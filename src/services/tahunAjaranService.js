@@ -13,11 +13,11 @@ export const tahunAjaranService = {
         });
         return result.rows[0];
     },
-    create: async (keterangan, userId) => {
+    create: async (keterangan) => {
         const id = uuidv4();
         await db.execute({
-            sql: "INSERT INTO tahun_ajaran (id, keterangan, created_by) VALUES (?,?,?)",
-            args: [id, keterangan, userId]
+            sql: "INSERT INTO tahun_ajaran (id, keterangan) VALUES (?,?)",
+            args: [id, keterangan]
         });
         return { id: id, keterangan: keterangan }
     },

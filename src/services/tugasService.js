@@ -34,7 +34,7 @@ export const tugasService = {
         await db.execute({
             sql: `INSERT INTO tugas
             (id, id_tahun_ajaran, id_pjgt, id_gt, jenis_penugasan)
-            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            VALUES (?, ?, ?, ?, ?)`,
             args: [id, data.idTahunAjaran, data.idPjgt, data.idGt, data.jenisPenugasan]
         })
         return { id: id, ...data }

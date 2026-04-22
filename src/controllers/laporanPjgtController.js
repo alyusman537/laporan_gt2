@@ -1,15 +1,15 @@
 import { LibsqlError } from "@libsql/client";
-import { laporanGtService } from "../services/laporanGtService.js"
+import { laporanPjgtService } from "../services/laporanPjgtService.js"
 import { tugasService } from "../services/tugasService.js";
 import { tahunAjaranService } from "../services/tahunAjaranService.js";
 import { gtService } from "../services/gtService.js";
 import { pjgtService } from "../services/pjgtService.js";
 
-export const laporanGtController = {
+export const laporanPjgtController = {
     tahun: async (req, res) => {
         try {
             const { tahun } = req.params;
-            const hasil = await laporanGtService.byTahun(tahun);
+            const hasil = await laporanPjgtService.byTahun(tahun);
             res.status(200).json({
                 success: true,
                 data: hasil
@@ -25,7 +25,7 @@ export const laporanGtController = {
     bulan: async (req, res) => {
         try {
             const { tahun, bulan } = req.params;
-            const hasil = await laporanGtService.byBulan(tahun, bulan);
+            const hasil = await laporanPjgtService.byBulan(tahun, bulan);
             res.status(200).json({
                 success: true,
                 data: hasil
@@ -40,7 +40,7 @@ export const laporanGtController = {
     },
     gtByAdmin: async (req, res) => {
         try {
-            const hasil = await laporanGtService.byGt(req.params.id_gt);
+            const hasil = await laporanPjgtService.byGt(req.params.id_gt);
             res.status(200).json({
                 success: true,
                 data: hasil
@@ -55,7 +55,7 @@ export const laporanGtController = {
     },
     pjgtByAdmin: async (req, res) => {
         try {
-            const hasil = await laporanGtService.byPjgt(req.params.id_pjgt);
+            const hasil = await laporanPjgtService.byPjgt(req.params.id_pjgt);
             res.status(200).json({
                 success: true,
                 data: hasil
@@ -68,9 +68,9 @@ export const laporanGtController = {
             }
         }
     },
-    gt: async (req, res) => {
+    pjgt: async (req, res) => {
         try {
-            const hasil = await laporanGtService.byGt(req.user.id);
+            const hasil = await laporanPjgtService.byPjgt(req.user.id);
             res.status(200).json({
                 success: true,
                 data: hasil
@@ -86,7 +86,7 @@ export const laporanGtController = {
     detail: async (req, res) => {
         try {
             const { id } = req.params;
-            const laporan = await laporanGtService.detail(id);
+            const laporan = await laporanPjgtService.detail(id);
             const tugas = await tugasService.byId(laporan.id_tugas);
             const tahunAjaran = await tahunAjaranService.byId(tugas.id_tahun_ajaran);
             const gt = await gtService.byId(tugas.id_gt);
@@ -120,7 +120,7 @@ export const laporanGtController = {
             if (!tugas || tugas.aktif == '0') {
                 res.status(400).json({ success: false, message: 'penugasan anda tidak ada atau sudah berakhir' })
             }
-            const hasil = await laporanGtService.create(idGt, tugas.id, req.body);
+            const hasil = await laporanPjgtService.create(idGt, tugas.id, req.body);
             res.status(201).json({ success: true, data: hasil })
         } catch (error) {
             if (error instanceof LibsqlError) {

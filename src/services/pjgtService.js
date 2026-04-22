@@ -25,16 +25,16 @@ export const pjgtService = {
         const id = uuidv4();
         await db.execute({
             sql: `INSERT INTO pjgt (id, username, password, nama, nik_pjgt,
-            hp_pjgt, nama_km, hp_km,nama_madrasah, alamat_madrasah) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            hp_pjgt, nama_km, hp_km,nama_madrasah, alamat_madrasah) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             args: [id, username, password, data.nama, data.nikPjgt, data.hpPjgt, data.namaKm, data.hpKm, data.namaMadrasah, data.alamatMadrasah]
         })
-        return { id: id, ...data }
+        return { id: id, username: username, ...data }
     },
     update: async (id, data) => {
         await db.execute({
             sql: `UPDATE pjgt SET nama=?, nik_pjgt=?, hp_pjgt=?,
-            nama_km=?, hp_km=?, alamat_madrasah=?, updated_at=? WHERE id=?`,
-            args: [data.nama, data.nikPjgt, data.hpPjgt, data.namaKm, data.hpKm, data.alamatMadrasah, ymdhis, id]
+            nama_km=?, hp_km=?, nama_madrasah=?, alamat_madrasah=?, updated_at=? WHERE id=?`,
+            args: [data.nama, data.nikPjgt, data.hpPjgt, data.namaKm, data.hpKm, data.namaMadrasah, data.alamatMadrasah, ymdhis, id]
         })
         return { pesan: `Berhasil update data PJGT id ${id}`, ...data }
     },

@@ -30,8 +30,7 @@ export const tahunAjaranController = {
     create: async (req, res) => {
         try {
             const { keterangan } = req.body;
-            const userId = req.user.id;
-            const hasil = await tahunAjaranService.create(keterangan, userId);
+            const hasil = await tahunAjaranService.create(keterangan);
             res.status(200).json({ success: true, data: hasil })
         } catch (error) {
             if (error instanceof LibsqlError) {

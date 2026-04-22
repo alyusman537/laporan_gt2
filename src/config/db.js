@@ -99,6 +99,7 @@ const initDb = async () => {
             id TEXT PRIMARY KEY,
             id_pjgt TEXT NOT NULL,
             id_tugas TEXT NOT NULL,
+            bulan_ke INTEGER NOT NULL,
             status_kelas BOOLEAN DEFAULT false,
             wali_kelas TEXT NOT NULL,
             guru_fak TEXT NOT NULL,

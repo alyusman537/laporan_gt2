@@ -9,12 +9,13 @@ import { gtController } from '../controllers/gtController.js';
 import { tahunAjaranController } from '../controllers/tahunAjaranController.js';
 import { tugasController } from '../controllers/tugasController.js';
 import { laporanGtController } from '../controllers/laporanGtController.js';
+import { laporanPjgtController } from '../controllers/laporanPjgtController.js';
 
 export const router = express.Router();
 const pjgtSchema = ["nama", "nikPjgt", "hpPjgt", "namaKm", "hpKm", "namaMadrasah", "alamatMadrasah"];
 const gtSchema = ["nim", "nama", "nik", "tempatLahir", "tanggalLahir", "alamat", "hp", "namaAyah", "namaIbu", "namaWali", "hpWali", "asalKelas", "waliKelas"];
 const tugasSchema = ["idTahunAjaran", "idPjgt", "idGt", "jenisPenugasan"];
-const laporanGtSchema = ["bulan_ke", "statusKelas", "waliKelas", "guruFak", "jkMurid", "kedisiplinanGt", "kegiatanGt", "rambutGt", "suratIzinDigunakan", "pergiGt", "pulangGt", "pelanggaranGt", "hubunganPjgt", "hubunganKm", "hubunganGuru", "hubunganMuridKelas", "hubunganMuridLuarKelas", "tanggapanMurid", "bisyaroh"]
+const laporanGtSchema = ["bulanKe", "statusKelas", "waliKelas", "guruFak", "jkMurid", "kedisiplinanGt", "kegiatanGt", "rambutGt", "suratIzinDigunakan", "pergiGt", "pulangGt", "pelanggaranGt", "hubunganPjgt", "hubunganKm", "hubunganGuru", "hubunganMuridKelas", "hubunganMuridLuarKelas", "tanggapanMurid", "bisyaroh"]
 
 router.post("/login", validateBody(["username", "role", "password"]), authController.login);
 
@@ -48,13 +49,26 @@ router.post("/tugas", authenticate, roleMiddleware.admin, validateBody(tugasSche
 router.put("/tugas/:id", authenticate, roleMiddleware.admin, validateBody(tugasSchema), tugasController.update);
 router.delete("/tugas/:id", authenticate, roleMiddleware.admin, tugasController.delete);
 
+router.get("/laporan-gt/admin/tahunan/:tahun", authenticate, roleMiddleware.admin, laporanGtController.tahun);
+router.get("/laporan-gt/admin/bulanan/:tahun/:bulan", authenticate, roleMiddleware.admin, laporanGtController.bulan);
+router.get("/laporan-gt/admin/by-pjgt/:id_pjgt", authenticate, roleMiddleware.admin, laporanGtController.pjgtByAdmin);
+router.get("/laporan-gt/admin/by-pjgt/:id_gt", authenticate, roleMiddleware.admin, laporanGtController.gtByAdmin);
+
+router.get("/laporan-pjgt/admin/tahunan/:tahun", authenticate, roleMiddleware.admin, laporanPjgtController.tahun);
+router.get("/laporan-pjgt/admin/bulanan/:tahun/:bulan", authenticate, roleMiddleware.admin, laporanPjgtController.bulan);
+router.get("/laporan-pjgt/admin/by-pjgt/:id_pjgt", authenticate, roleMiddleware.admin, laporanPjgtController.pjgtByAdmin);
+router.get("/laporan-pjgt/admin/by-pjgt/:id_gt", authenticate, roleMiddleware.admin, laporanPjgtController.gtByAdmin);
+
 //PJGT
 router.put("/pjgt/change-password/:id", authenticate, roleMiddleware.pjgt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), pjgtController.changePassword);
+router.post("/laporan-pjgt/gt", authenticate, roleMiddleware.pjgt, validateBody(laporanGtSchema), laporanPjgtController.create);
+router.get("/laporan-pjgt/gt", authenticate, roleMiddleware.pjgt, laporanPjgtController.pjgt);
 
 //GT
 router.put("/gt/change-password/:id", authenticate, roleMiddleware.gt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), gtController.changePassword);
-router.post("/laporan-gt", authenticate, roleMiddleware.gt, validateBody(laporanGtSchema), laporanGtController.create);
+router.post("/laporan-gt/gt", authenticate, roleMiddleware.gt, validateBody(laporanGtSchema), laporanGtController.create);
+router.get("/laporan-gt/gt", authenticate, roleMiddleware.gt, laporanGtController.gt);
 
 //LOGIN
-router.get("/laporan-gt/tahunan/:tahun", authenticate, laporanGtController.tahun);
-router.get("/laporan-gt/bulanan/:tahun/:bulan", authenticate, laporanGtController.bulan);
+router.get("/laporan-gt/detail/:id", authenticate, laporanGtController.detail);
+router.get("/laporan-pjgt/detail/:id", authenticate, laporanGtController.detail);

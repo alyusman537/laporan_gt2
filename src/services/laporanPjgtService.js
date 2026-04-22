@@ -2,11 +2,11 @@ import { v4 as uuidv4 } from "uuid";
 import db from "../config/db.js"
 
 
-export const laporanGtService = {
+export const laporanPjgtService = {
     byTahun: async (tahun) => {
         const result = await db.execute({
             sql: `SELECT lp.id as id_laporan, lp.bulan_ke, lp.id_gt, lp.id_tugas, gt.nama as nama_gt, pjgt.nama as nama_pjgt, pjgt.nama_madrasah, ta.keterangan as thn_ajaran
-            FROM laporan_gt lp
+            FROM laporan_pjgt lp
             LEFT JOIN tugas t ON lp.id_tugas = t.id
             LEFT JOIN tahun_ajaran ta ON t.id_tahun_ajaran=ta.id
             LEFT JOIN gt ON t.id_gt = gt.id
@@ -19,7 +19,7 @@ export const laporanGtService = {
     byBulan: async (tahun, bulan) => {
         const result = await db.execute({
             sql: `SELECT lp.id as id_laporan, lp.bulan_ke, lp.id_gt, lp.id_tugas, gt.nama as nama_gt, pjgt.nama as nama_pjgt, pjgt.nama_madrasah, ta.keterangan as thn_ajaran
-            FROM laporan_gt lp
+            FROM laporan_pjgt lp
             LEFT JOIN tugas t ON lp.id_tugas = t.id
             LEFT JOIN tahun_ajaran ta ON t.id_tahun_ajaran=ta.id
             LEFT JOIN gt ON t.id_gt = gt.id
@@ -32,7 +32,7 @@ export const laporanGtService = {
     byGt: async (idGt) => {
         const result = await db.execute({
             sql: `SELECT lp.id as id_laporan, lp.bulan_ke, lp.id_gt, lp.id_tugas, gt.nama as nama_gt, pjgt.nama as nama_pjgt, pjgt.nama_madrasah, ta.keterangan as thn_ajaran
-            FROM laporan_gt lp
+            FROM laporan_pjgt lp
             LEFT JOIN tugas t ON lp.id_tugas = t.id
             LEFT JOIN tahun_ajaran ta ON t.id_tahun_ajaran=ta.id
             LEFT JOIN gt ON t.id_gt = gt.id
@@ -45,7 +45,7 @@ export const laporanGtService = {
     byPjgt: async (idPjgt) => {
         const result = await db.execute({
             sql: `SELECT lp.id as id_laporan, lp.bulan_ke, lp.id_gt, lp.id_tugas, gt.nama as nama_gt, pjgt.nama as nama_pjgt, pjgt.nama_madrasah, ta.keterangan as thn_ajaran
-            FROM laporan_gt lp
+            FROM laporan_pjgt lp
             LEFT JOIN tugas t ON lp.id_tugas = t.id
             LEFT JOIN tahun_ajaran ta ON t.id_tahun_ajaran=ta.id
             LEFT JOIN gt ON t.id_gt = gt.id
@@ -57,22 +57,22 @@ export const laporanGtService = {
     },
     detail: async (id) => {
         const result = await db.execute({
-            sql: `SELECT * FROM laporan_gt WHERE id=?`,
+            sql: `SELECT * FROM laporan_pjgt WHERE id=?`,
             args: [id]
         });
         return result.rows[0]
     },
-    create: async (idGt, idTugas, data) => {
+    create: async (idPjgt, idTugas, data) => {
         const id = uuidv4();
         await db.execute({
-            sql: `INSERT INTO laporan_gt (
-            id, id_gt, id_tugas, bulan_ke, status_kelas, wali_kelas, guru_fak,
+            sql: `INSERT INTO laporan_pjgt (
+            id, id_pjgt, id_tugas, bulan_ke, status_kelas, wali_kelas, guru_fak,
             jenis_kelamin_murid, kedisiplinan_gt, keigatan_gt, rambut_gt, surat_izin_digunakan,
             pergi_gt, pulang_gt, pelanggaran_gt, hubungan_pjgt, hubungan_km,
             hubungan_guru, hubungan_murid_kelas, hungan_murid_luar_kelas, tanggapan_murid, bisyaroh)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            args: [id, idGt, idTugas, data.bulanKe, data.statusKelas, data.waliKelas, data.guruFak, data.jkMurid, data.kedisiplinanGt, data.kegiatanGt, data.rambutGt, data.suratIzinDigunakan, data.pergiGt, data.pulangGt, data.pelanggaranGt, data.hubunganPjgt, data.hubunganKm, data.hubunganGuru, data.hubunganMuridKelas, data.hubunganMuridLuarKelas, data.tanggapanMurid, data.bisyaroh]
+            args: [id, idPjgt, idTugas, data.bulanKe, data.statusKelas, data.waliKelas, data.guruFak, data.jkMurid, data.kedisiplinanGt, data.kegiatanGt, data.rambutGt, data.suratIzinDigunakan, data.pergiGt, data.pulangGt, data.pelanggaranGt, data.hubunganPjgt, data.hubunganKm, data.hubunganGuru, data.hubunganMuridKelas, data.hubunganMuridLuarKelas, data.tanggapanMurid, data.bisyaroh]
         })
-        return {id: id, idGt: idGt, idTugas: idTugas, ...data}
+        return {id: id, idPjgt: idPjgt, idTugas: idTugas, ...data}
     }
 }
