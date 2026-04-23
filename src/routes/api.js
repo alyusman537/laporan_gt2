@@ -52,20 +52,20 @@ router.delete("/tugas/:id", authenticate, roleMiddleware.admin, tugasController.
 router.get("/laporan-gt/admin/tahunan/:tahun", authenticate, roleMiddleware.admin, laporanGtController.tahun);
 router.get("/laporan-gt/admin/bulanan/:tahun/:bulan", authenticate, roleMiddleware.admin, laporanGtController.bulan);
 router.get("/laporan-gt/admin/by-pjgt/:id_pjgt", authenticate, roleMiddleware.admin, laporanGtController.pjgtByAdmin);
-router.get("/laporan-gt/admin/by-pjgt/:id_gt", authenticate, roleMiddleware.admin, laporanGtController.gtByAdmin);
+router.get("/laporan-gt/admin/by-gt/:id_gt", authenticate, roleMiddleware.admin, laporanGtController.gtByAdmin);
 
 router.get("/laporan-pjgt/admin/tahunan/:tahun", authenticate, roleMiddleware.admin, laporanPjgtController.tahun);
 router.get("/laporan-pjgt/admin/bulanan/:tahun/:bulan", authenticate, roleMiddleware.admin, laporanPjgtController.bulan);
 router.get("/laporan-pjgt/admin/by-pjgt/:id_pjgt", authenticate, roleMiddleware.admin, laporanPjgtController.pjgtByAdmin);
-router.get("/laporan-pjgt/admin/by-pjgt/:id_gt", authenticate, roleMiddleware.admin, laporanPjgtController.gtByAdmin);
+router.get("/laporan-pjgt/admin/by-gt/:id_gt", authenticate, roleMiddleware.admin, laporanPjgtController.gtByAdmin);
 
 //PJGT
-router.put("/pjgt/change-password/:id", authenticate, roleMiddleware.pjgt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), pjgtController.changePassword);
+router.put("/pjgt/change-password", authenticate, roleMiddleware.pjgt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), pjgtController.changePassword);
 router.post("/laporan-pjgt/gt", authenticate, roleMiddleware.pjgt, validateBody(laporanGtSchema), laporanPjgtController.create);
 router.get("/laporan-pjgt/gt", authenticate, roleMiddleware.pjgt, laporanPjgtController.pjgt);
 
 //GT
-router.put("/gt/change-password/:id", authenticate, roleMiddleware.gt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), gtController.changePassword);
+router.post("/gt/change-password", authenticate, roleMiddleware.gt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), gtController.changePassword);
 router.post("/laporan-gt/gt", authenticate, roleMiddleware.gt, validateBody(laporanGtSchema), laporanGtController.create);
 router.get("/laporan-gt/gt", authenticate, roleMiddleware.gt, laporanGtController.gt);
 

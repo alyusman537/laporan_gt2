@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from "bcryptjs";
 import { LibsqlError } from "@libsql/client";
 import { userService } from "../services/userService.js";
 import { passwordBcrypt } from '../utils/passwordBcrypt.js';

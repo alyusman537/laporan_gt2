@@ -88,17 +88,17 @@ export const gtController = {
         try {
             const id = req.user.id;
             const { oldPassword, newPassword, confirmPassword } = req.body;
-            const pjgt = await gtService.byId(id);
-            if (!pjgt) {
+            const gt = await gtService.byId(id);
+            if (!gt) {
                 res.status(400).json({ success: false, message: "id gt tidak valid" });
             }
-            if (!passwordBcrypt.banding(oldPassword, pjgt.password)) {
+            if (!passwordBcrypt.banding(oldPassword, gt.password)) {
                 res.status(400).json({ success: false, message: "password lama yang anda masukkan salah." });
             }
             if (newPassword != confirmPassword) {
                 res.status(400).json({ success: false, message: "password baru dan konfirmasi password harus sama" });
             }
-            const hasil = await pjgtService.changePassword(id, passwordBcrypt.enkrip(newPassword));
+            const hasil = await gtService.changePassword(id, passwordBcrypt.enkrip(newPassword));
             res.status(200).json({ success: true, data: hasil });
         } catch (error) {
             if (error instanceof LibsqlError) {
