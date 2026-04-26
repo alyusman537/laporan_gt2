@@ -32,21 +32,15 @@ export const tugasController = {
     },
     create: async (req, res) => {
         try {
-            const { idTahunAjaran, idPjgt, idGt, jenisPenugasan } = req.body;
-            const data = {
-                idTahunAjaran: idTahunAjaran,
-                idPjgt: idPjgt,
-                idGt: idGt,
-                jenisPenugasan: jenisPenugasan,
-                userId: req.user.id
-            }
+            const { idTahunAjaran, idPjgt, idGt } = req.body;
             const ta = await tahunAjaranService.byId(idTahunAjaran);
             const pjgt = await pjgtService.byId(idPjgt);
             const gt = await gtService.byId(idGt);
             if(!ta || !pjgt || !gt) {
                 res.status(400).json({success: false, message: "Silahkan periksa lagi id tahun ajaran, pjgt dan gt yang anda input"})
             }
-            const hasil = await tugasService.create(data);
+            const cek = await tugasService.cek(req.body)
+            const hasil = await tugasService.create(req.body, req.user.id);
             res.status(200).json({success: true, data: hasil})
         } catch (error) {
             if (error instanceof LibsqlError) {
