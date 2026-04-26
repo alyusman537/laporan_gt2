@@ -60,11 +60,13 @@ router.get("/laporan-pjgt/admin/by-pjgt/:id_pjgt", authenticate, roleMiddleware.
 router.get("/laporan-pjgt/admin/by-gt/:id_gt", authenticate, roleMiddleware.admin, laporanPjgtController.gtByAdmin);
 
 //PJGT
+router.get("/pjgt-profile", authenticate, roleMiddleware.gt, pjgtController.myProfile);
 router.put("/pjgt/change-password", authenticate, roleMiddleware.pjgt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), pjgtController.changePassword);
 router.post("/laporan-pjgt/gt", authenticate, roleMiddleware.pjgt, validateBody(laporanGtSchema), laporanPjgtController.create);
 router.get("/laporan-pjgt/gt", authenticate, roleMiddleware.pjgt, laporanPjgtController.pjgt);
 
 //GT
+router.get("/gt-profile", authenticate, roleMiddleware.gt, gtController.myProfile);
 router.post("/gt/change-password", authenticate, roleMiddleware.gt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), gtController.changePassword);
 router.post("/laporan-gt/gt", authenticate, roleMiddleware.gt, validateBody(laporanGtSchema), laporanGtController.create);
 router.get("/laporan-gt/gt", authenticate, roleMiddleware.gt, laporanGtController.gt);

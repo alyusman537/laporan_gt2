@@ -3,6 +3,18 @@ import { passwordBcrypt } from "../utils/passwordBcrypt.js";
 import { LibsqlError } from "@libsql/client";
 
 export const gtController = {
+    myProfile: async (req, res) => {
+        try {
+            const hasil = await gtService.byId(req.user.id);
+            res.status(201).json({ success: true, data: hasil });
+        } catch (error) {
+            if (error instanceof LibsqlError) {
+                res.status(500).json({ success: false, message: `libSQL Error: ${error.code} - ${error.message}` });
+            } else {
+                res.status(500).json({ success: false, message: `An unexpected error occurred: ${error}` });
+            }
+        }
+    },
     all: async (req, res) => {
         try {
             const hasil = await gtService.all();
