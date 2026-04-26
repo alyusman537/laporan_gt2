@@ -18,6 +18,8 @@ const tugasSchema = ["idTahunAjaran", "idPjgt", "idGt", "jenisPenugasan"];
 const laporanGtSchema = ["bulanKe", "statusKelas", "waliKelas", "guruFak", "jkMurid", "kedisiplinanGt", "kegiatanGt", "rambutGt", "suratIzinDigunakan", "pergiGt", "pulangGt", "pelanggaranGt", "hubunganPjgt", "hubunganKm", "hubunganGuru", "hubunganMuridKelas", "hubunganMuridLuarKelas", "tanggapanMurid", "bisyaroh"]
 
 router.post("/login", validateBody(["username", "role", "password"]), authController.login);
+// refresh token endpoint
+router.post("/refresh-token", authController.refreshToken);
 
 //ADMIN
 router.get("/users", authenticate, roleMiddleware.admin, userController.all);

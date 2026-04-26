@@ -1,42 +1,63 @@
-import express from "express";
-import cors from "cors"; // 1. Import library CORS
-import helmet from "helmet";
-import { rateLimit } from "express-rate-limit"
-import { router } from "./src/routes/api.js";
 import dotenv from "dotenv";
+dotenv.config(); 
 
-dotenv.config();
-const limiter = rateLimit({
-	windowMs: 1 * 60 * 1000, // 1 minutes
-	limit: 50, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
-	standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
-	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
-	// ipv6Subnet: 56, // Set to 60 or 64 to be less aggressive, or 52 or 48 to be more aggressive
-	// store: ... , // Redis, Memcached, etc. See below.
-})
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
+import { router } from "./src/routes/api.js";
 
-const app = express();
-app.use(express.json());
-// 2. Gunakan Middleware CORS
-// Opsi A: Izinkan semua origin (Cocok untuk development)
-app.use(cors(), helmet(), limiter);
-
-/* // Opsi B: Batasi hanya untuk domain tertentu (Lebih Aman untuk Produksi)
-app.use(cors({
-  origin: ['http://localhost:8080', 'https://domainanda.com'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-*/
-
-// Set timezone global untuk proses Node.js
+// Set timezone
 process.env.TZ = "Asia/Jakarta";
 
-console.log(`Server Time: ${new Date().toString()}`);
+const app = express();
 
-app.use("/api", router );
+// --- 1. Konfigurasi Middleware ---
 
+// Keamanan Header (Paling atas)
+app.use(helmet()); 
+
+// Konfigurasi CORS
+// Catatan: Anda memanggil app.use(cors()) dua kali di kode lama. Cukup sekali saja.
+app.use(cors({
+  origin: "*", 
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// Parser JSON (Penting sebelum masuk ke Router)
+app.use(express.json()); 
+
+// Rate Limiter
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 Menit
+    limit: 50,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message: "Terlalu banyak permintaan, silakan coba lagi nanti."
+    }
+});
+app.use(limiter);
+
+// --- 2. Logging & Debug ---
+console.log(`Server Timezone: ${process.env.TZ}`);
+console.log(`Current Time: ${new Date().toLocaleString('id-ID')}`);
+
+// --- 3. Routes ---
+app.use("/api", router);
+
+// --- 4. Server Listener ---
 const PORT = process.env.PORT || 3131;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
+    
+    // Validasi Environment Variables
+    const requiredEnv = ['JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'];
+    requiredEnv.forEach(envVar => {
+        if (!process.env[envVar]) {
+            console.warn(`⚠️ PERINGATAN: ${envVar} belum disetel di .env!`);
+        }
+    });
 });

@@ -11,7 +11,8 @@ export const authenticate = (req, res, next) => {
     const token = authHeader.split(" ")[1];
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // ganti dari JWT_SECRET ke JWT_ACCESS_SECRET
+        const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
         req.user = decoded; // Menyimpan data user (id & level) ke object request
         next();
     } catch (error) {
