@@ -6,7 +6,7 @@ export const pjgtController = {
     myProfile: async (req, res) => {
         try {
             const hasil = await pjgtService.byId(req.user.id);
-            res.status(201).json({ success: true, data: hasil });
+            res.status(200).json({ success: true, data: hasil });
         } catch (error) {
             if (error instanceof LibsqlError) {
                 res.status(500).json({ success: false, message: `libSQL Error: ${error.code} - ${error.message}` });
@@ -18,7 +18,7 @@ export const pjgtController = {
     all: async (req, res) => {
         try {
             const hasil = await pjgtService.all();
-            res.status(201).json({ success: true, data: hasil });
+            res.status(200).json({ success: true, data: hasil });
         } catch (error) {
             if (error instanceof LibsqlError) {
                 res.status(500).json({ success: false, message: `libSQL Error: ${error.code} - ${error.message}` });
@@ -31,7 +31,7 @@ export const pjgtController = {
         try {
             const { id } = req.params;
             const hasil = await pjgtService.byId(id);
-            res.status(201).json({ success: true, data: hasil });
+            res.status(200).json({ success: true, data: hasil });
         } catch (error) {
             if (error instanceof LibsqlError) {
                 res.status(500).json({ success: false, message: `libSQL Error: ${error.code} - ${error.message}` });
