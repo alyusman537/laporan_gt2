@@ -10,6 +10,7 @@ import { tahunAjaranController } from '../controllers/tahunAjaranController.js';
 import { tugasController } from '../controllers/tugasController.js';
 import { laporanGtController } from '../controllers/laporanGtController.js';
 import { laporanPjgtController } from '../controllers/laporanPjgtController.js';
+import { statusPjgtController } from '../controllers/statusPjgtController.js';
 
 export const router = express.Router();
 const pjgtSchema = ["nama", "nikPjgt", "hpPjgt", "namaKm", "hpKm", "namaMadrasah", "alamatMadrasah"];
@@ -31,9 +32,18 @@ router.post("/pjgt", authenticate, roleMiddleware.admin, validateBody(pjgtSchema
 router.put("/pjgt/:id", authenticate, roleMiddleware.admin, validateBody(pjgtSchema), pjgtController.update);
 router.get("/pjgt-reset/:id", authenticate, roleMiddleware.admin, pjgtController.reset);
 router.delete("/pjgt/:id", authenticate, roleMiddleware.admin, pjgtController.delete);
+////
+router.get("/pjgt-status/:id", authenticate, roleMiddleware.admin, statusPjgtController.getAllStatus);
+router.get("/pjgt-riwayat/:id", authenticate, roleMiddleware.admin, statusPjgtController.getHistoryStatus);
+router.post("/pjgt-status/:id", authenticate, roleMiddleware.admin, statusPjgtController.createStatus);
+router.put("/pjgt-status/:id", authenticate, roleMiddleware.admin, statusPjgtController.updateStatus);
+
+
+
 
 router.get("/gt", authenticate, roleMiddleware.admin, gtController.all);
 router.get("/gt/:id", authenticate, roleMiddleware.admin, gtController.byId);
+router.get("/gt-tahun/:tahun", authenticate, roleMiddleware.admin, gtController.byTahun);
 router.post("/gt", authenticate, roleMiddleware.admin, validateBody(gtSchema), gtController.create);
 router.put("/gt/:id", authenticate, roleMiddleware.admin, validateBody(gtSchema), gtController.update);
 router.get("/gt-reset/:id", authenticate, roleMiddleware.admin, gtController.reset);
@@ -44,6 +54,8 @@ router.get("/tahun-ajaran/:id", authenticate, roleMiddleware.admin, tahunAjaranC
 router.post("/tahun-ajaran", authenticate, validateBody(["keterangan"]), roleMiddleware.admin, tahunAjaranController.create);
 router.put("/tahun-ajaran/:id", authenticate, validateBody(["keterangan"]), roleMiddleware.admin,tahunAjaranController.update);
 router.get("/tahun-ajaran-aktif/:id", authenticate, roleMiddleware.admin, tahunAjaranController.aktif);
+// chek aktif tahun ajaran bila aktif maka akan mengembalikan data tahun ajaran yang aktif, bila tidak ada yang aktif maka akan mengembalikan null
+router.get("/tahun-ajaran-check-aktif", authenticate,roleMiddleware.admin, tahunAjaranController.getAktif);
 
 router.get("/tugas", authenticate, roleMiddleware.admin, tugasController.all);
 router.get("/tugas/:id", authenticate, roleMiddleware.admin, tugasController.byId);

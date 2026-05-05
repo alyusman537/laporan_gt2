@@ -36,6 +36,7 @@ const initDb = async () => {
             username TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             role TEXT DEFAULT 'pjgt',
+            id_tahun_ajaran TEXT NOT NULL,
             nama TEXT NOT NULL,
             nik_pjgt TEXT NOT NULL UNIQUE,
             hp_pjgt TEXT NOT NULL,
@@ -43,9 +44,10 @@ const initDb = async () => {
             hp_km TEXT,
             nama_madrasah TEXT NOT NULL,
             alamat_madrasah TEXT NOT NULL,
-            aktif BOOLEAN DEFAULT 1,
+            aktif BOOLEAN DEFAULT 1,            
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id)
             )`;
     await db.execute(pjgtQuery);
 
@@ -54,6 +56,7 @@ const initDb = async () => {
             nim TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             role TEXT DEFAULT 'gt',
+            id_tahun_ajaran TEXT NOT NULL,
             nama TEXT NOT NULL,
             nik TEXT NOT NULL,
             tempat_lahir TEXT NOT NULL,
@@ -66,9 +69,10 @@ const initDb = async () => {
             hp_wali TEXT NOT NULL,
             asal_kelas TEXT NOT NULL,
             wali_kelas TEXT NOT NULL,
-            aktif BOOLEAN DEFAULT 1,
+            aktif BOOLEAN DEFAULT 1,           
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+             FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id)
         )`;
     await db.execute(gtQuery);
 
@@ -88,18 +92,33 @@ const initDb = async () => {
             jenis_penugasan TEXT CHECK(jenis_penugasan IN('wajib', 'tatowuk')),
             aktif BOOLEAN DEFAULT 1,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id),
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,   
+            FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id),         
             FOREIGN KEY (id_pjgt) REFERENCES pjgt (id),
             FOREIGN KEY (id_gt) REFERENCES gt (id)
         )`;
     await db.execute(tugasQuery);
+//////
+    const statusPJGTQuery = `CREATE TABLE IF NOT EXISTS statusPJGT (
+            id TEXT PRIMARY KEY,
+            id_tahun_ajaran TEXT NOT NULL,
+            id_pjgt TEXT NOT NULL,            
+            aktif BOOLEAN DEFAULT 1,
+            alasan TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,   
+            FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id),         
+            FOREIGN KEY (id_pjgt) REFERENCES pjgt (id)
+            
+        )`;
+    await db.execute(statusPJGTQuery);
 
     const laporanPjgtQuery = `CREATE TABLE IF NOT EXISTS laporan_pjgt (
             id TEXT PRIMARY KEY,
             id_pjgt TEXT NOT NULL,
             id_tugas TEXT NOT NULL,
             bulan_ke INTEGER NOT NULL,
+            id_tahun_ajaran TEXT NOT NULL,
             status_kelas BOOLEAN DEFAULT false,
             wali_kelas TEXT NOT NULL,
             guru_fak TEXT NOT NULL,
@@ -119,6 +138,7 @@ const initDb = async () => {
             tanggapan_murid TEXT,
             bisyaroh TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id),   
             FOREIGN KEY (id_tugas) REFERENCES tugas (id),
             FOREIGN KEY (id_pjgt) REFERENCES pjgt (id)
         )`;
@@ -129,6 +149,7 @@ const initDb = async () => {
             id_gt TEXT NOT NULL,
             id_tugas TEXT NOT NULL,
             bulan_ke INTEGER NOT NULL,
+            id_tahun_ajaran TEXT NOT NULL,
             status_kelas BOOLEAN DEFAULT false,
             wali_kelas TEXT NOT NULL,
             guru_fak TEXT NOT NULL,
@@ -148,6 +169,7 @@ const initDb = async () => {
             tanggapan_murid TEXT,
             bisyaroh TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id),  
             FOREIGN KEY (id_tugas) REFERENCES tugas (id),
             FOREIGN KEY (id_gt) REFERENCES gt (id)
         )`;

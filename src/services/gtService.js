@@ -15,14 +15,41 @@ export const gtService = {
         });
         return result.rows[0]
     },
+     byTahun: async (tahun) => {
+        const result = await db.execute({
+            sql: "SELECT * FROM gt WHERE id_tahun_ajaran=?",
+            args: [tahun]
+        });
+        return result.rows
+    },
     create: async (nim, password, data) => {
-        const id = uuidv4();
+       const id = data.id || uuidv4();  
+       console.log("data yang akan digunakan:", { id, nim, password, ...data });
+    
+   const  args = [id, 
+        nim, 
+        password, 
+        data.nama, 
+        data.nik, 
+        data.idTahunAjaran, // Pastikan dari Flutter dikirim dengan key 'idTahunAjaran'
+        data.tempatLahir, 
+        data.tanggalLahir, 
+        data.alamat, 
+        data.hp, 
+        data.namaAyah, 
+        data.namaIbu, 
+        data.namaWali, 
+        data.hpWali, 
+        data.asalKelas, 
+        data.waliKelas];
+            console.log("Argumen yang akan dieksekusi:", args);
         await db.execute({
-            sql: `INSERT INTO gt (id, nim, password, nama, nik,
+            sql: `INSERT INTO gt (id, nim, password, nama, nik,id_tahun_ajaran,
             tempat_lahir, tanggal_lahir, alamat, hp, nama_ayah,
-            nama_ibu, nama_wali, hp_wali, asal_kelas, wali_kelas) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
-            args: [id, nim, password, data.nama, data.nik, data.tempatLahir, data.tanggalLahir, data.alamat, data.hp, data.namaAyah, data.namaIbu, data.namaWali, data.hpWali, data.asalKelas, data.waliKelas]
+            nama_ibu, nama_wali, hp_wali, asal_kelas, wali_kelas) VALUES VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            args: args
         })
+       
         return { id: id, ...data }
     },
     update: async (id, data) => {

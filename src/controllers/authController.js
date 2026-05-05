@@ -80,7 +80,7 @@ export const authController = {
             const accessToken = jwt.sign(
                 { id: user.id, role: user.role },
                 process.env.JWT_ACCESS_SECRET,
-                { expiresIn: '15m' }
+                { expiresIn: '1d' }
             );
 
             // 4. Buat Refresh Token baru (Rotation Strategy agar lebih aman)

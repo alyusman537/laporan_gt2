@@ -29,16 +29,59 @@ export const tahunAjaranService = {
         return { id: id, keterangan: keterangan }
     },
     aktif: async (id) => {
-        const transaksional = [];
-        transaksional.push({
-            sql: "UPDATE tahun_ajaran SET aktif=0 WHERE id <> ?",
-            args: [id]
-        })
-        transaksional.push({
-            sql: "UPDATE tahun_ajaran SET aktif=1 WHERE id=?",
-            args: [id]
-        })
-        await db.batch(transaksional)
-        return { message: ` id tahun ajaran ${id} berhasil dijadikan aktif` }
-    }
+    const transaksional = [];
+    
+    // 1. Nonaktifkan semua selain ID ini
+    transaksional.push({
+        sql: "UPDATE tahun_ajaran SET aktif=0 WHERE id <> ?",
+        args: [id]
+    });
+    
+    // 2. Aktifkan ID ini
+    transaksional.push({
+        sql: "UPDATE tahun_ajaran SET aktif=1 WHERE id=?",
+        args: [id]
+    });
+    
+    await db.batch(transaksional);
+
+    // 3. Ambil data terbaru untuk dikembalikan ke client
+    const result = await db.execute({
+        sql: "SELECT * FROM tahun_ajaran WHERE id = ?",
+        args: [id]
+    });
+
+    const updatedData = result.rows[0];
+
+    return { 
+        message: `Tahun ajaran ${updatedData.keterangan} berhasil diaktifkan`,
+        data: updatedData // Mengembalikan objek lengkap {id, keterangan, aktif}
+    };
+},
+    // Tambahkan di dalam tahunAjaranService
+    // hanya menghasilkan tru.data tidak terkirim untuk disimpan 
+
+    getActive: async () => {
+        // 1. Coba cari yang benar-benar aktif
+        const activeResult = await db.execute("SELECT * FROM tahun_ajaran WHERE aktif = 1 ORDER BY id DESC LIMIT 1");
+        return activeResult.rows[0]
+
+
+        // if (activeResult.rows.length > 0) {
+        //     console.log("Data Aktif Ditemukan:", activeResult.rows[0]);
+        //     return activeResult.rows;
+        // }
+
+        // // 2. Fallback: Jika tidak ada yang aktif, ambil yang terakhir dibuat (ID terbaru/Keterangan terbaru)
+        // console.log("Tidak ada data aktif, mencari data terbaru...");
+        // const fallbackResult = await db.execute("SELECT * FROM tahun_ajaran ORDER BY keterangan DESC LIMIT 1");
+
+        // if (fallbackResult.rows.length > 0) {
+        //     return fallbackResult.rows;
+        // }
+
+        // // 3. Jika benar-benar kosong (tabel kosong)
+        // return null;
+    },
+
 }

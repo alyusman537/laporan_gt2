@@ -13,14 +13,19 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@adminjs/express": "^6.1.1",
+    "@adminjs/sql": "^2.2.6",
     "@libsql/client": "^0.17.2",
+    "adminjs": "^7.8.17",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-formidable": "^1.2.0",
     "express-rate-limit": "^8.3.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
+    "sqlite3": "^6.0.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

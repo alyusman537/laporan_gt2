@@ -3,6 +3,7 @@ import { passwordBcrypt } from "../utils/passwordBcrypt.js";
 import { LibsqlError } from "@libsql/client";
 
 export const pjgtController = {
+    
     myProfile: async (req, res) => {
         try {
             const hasil = await pjgtService.byId(req.user.id);

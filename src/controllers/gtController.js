@@ -40,6 +40,38 @@ export const gtController = {
             }
         }
     },
+    byTahun: async (req, res) => {
+    try {
+        const { tahun } = req.params;
+
+        console.log("Filter Tahun diterima:", tahun);
+        const hasil = await gtService.byTahun(tahun);
+
+        // 1. Tambahkan pengecekan jika hasil adalah null atau array kosong
+        if (!hasil || hasil.length === 0) {
+            return res.status(200).json({ 
+                success: false, // Berubah jadi false
+                message: `Data Guru Tugas tahun ${tahun} tidak ditemukan`, 
+                data: [] 
+            });
+        }
+
+        // 2. Jika ada data, kirim success: true
+        res.status(200).json({ 
+            success: true, 
+            message: `Data Guru Tugas tahun ${tahun} berhasil diambil`, 
+            data: hasil 
+        });
+
+    } catch (error) {
+        // ... logika catch tetap sama ...
+        if (error instanceof LibsqlError) {
+            res.status(500).json({ success: false, message: `libSQL Error: ${error.code} - ${error.message}` });
+        } else {
+            res.status(500).json({ success: false, message: `An unexpected error occurred: ${error}` });
+        }
+    }
+},
     create: async (req, res) => {
         try {
             const { nim } = req.body;
