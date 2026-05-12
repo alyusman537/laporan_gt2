@@ -41,6 +41,32 @@ export const pjgtController = {
             }
         }
     },
+    byTahun: async (req, res) => {
+        try {
+            const { tahun } = req.params;
+            const hasil = await pjgtService.byTahun(tahun);
+            res.status(200).json({ success: true, data: hasil });
+        } catch (error) {
+            if (error instanceof LibsqlError) {
+                res.status(500).json({ success: false, message: `libSQL Error: ${error.code} - ${error.message}` });
+            } else {
+                res.status(500).json({ success: false, message: `An unexpected error occurred: ${error}` });
+            }
+        }
+    },
+     listGt: async (req, res) => {
+        try {
+            const {id} = req.user;
+            const hasil = await pjgtService.listGt(id);
+            res.status(200).json({ success: true, data: hasil });
+        } catch (error) {
+            if (error instanceof LibsqlError) {
+                res.status(500).json({ success: false, message: `libSQL Error: ${error.code} - ${error.message}` });
+            } else {
+                res.status(500).json({ success: false, message: `An unexpected error occurred: ${error}` });
+            }
+        }
+    },
     create: async (req, res) => {
         try {
             const idPjgt = await pjgtService.autoId();

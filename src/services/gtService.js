@@ -15,6 +15,18 @@ export const gtService = {
         });
         return result.rows[0]
     },
+    byIdTempat: async (id) => {
+        const result = await db.execute({
+             sql: `SELECT t.*,  pjgt.nama_madrasah, pjgt.nama as nama_pjgt, pjgt.nama_km as nama_km, gt.nama as nama_gt
+            FROM tugas t
+         
+            LEFT JOIN pjgt ON t.id_pjgt=pjgt.id
+            LEFT JOIN gt ON t.id_gt=gt.id
+            WHERE t.id_gt=? ORDER BY  created_at DESC LIMIT 1 `,
+            args: [id]
+        });
+        return result.rows[0]
+    },
      byTahun: async (tahun) => {
         const result = await db.execute({
             sql: "SELECT * FROM gt WHERE id_tahun_ajaran=?",
@@ -76,4 +88,12 @@ export const gtService = {
         })
         return { pesan: `Berhasil reset password GT id ${id}` }
     },
+    changePassword: async(id, newPassword) => {
+          await db.execute({
+            sql: `UPDATE gt SET password=?, updated_at=? WHERE id=?`,
+            args: [newPassword, tanggalJam, id]
+        })
+        return { pesan: `Berhasil reset password GT id ${id}` }
+
+    }
 }

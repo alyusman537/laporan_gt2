@@ -11,10 +11,10 @@ export const tugasService = {
             LEFT JOIN gt ON t.id_gt=gt.id
             ORDER BY a.keterangan DESC, t.created_at ASC`)
         return result.rows
-    },
+    }, 
     byId: async (id) => {
         const result = await db.execute({
-            sql: `SELECT t.*, a.keterangan, pjgt.nama_madrasah, pjgt.nama as nama_pjgt, gt.nama as nama_gt
+            sql: `SELECT t.*, a.keterangan, pjgt.nama_madrasah, pjgt.nama as nama_pjgt, pjgt.nama_km as nama_km, gt.nama as nama_gt
             FROM tugas t
             LEFT JOIN tahun_ajaran a ON t.id_tahun_ajaran=a.id
             LEFT JOIN pjgt ON t.id_pjgt=pjgt.id
@@ -24,9 +24,22 @@ export const tugasService = {
         })
         return result.rows[0]
     },
+     byTahun: async (tahun) => {
+        const result = await db.execute({
+            sql: `SELECT t.*, a.keterangan, pjgt.nama_madrasah, pjgt.nama as nama_pjgt, pjgt.nik_pjgt, pjgt.nama_km, pjgt.alamat_madrasah, pjgt.hp_pjgt, pjgt.hp_km,
+            gt.nama as nama_gt,gt.tanggal_lahir, gt.tempat_lahir,gt.alamat as alamat_gt,gt.asal_kelas
+            FROM tugas t
+            LEFT JOIN tahun_ajaran a ON t.id_tahun_ajaran=a.id
+            LEFT JOIN pjgt ON t.id_pjgt=pjgt.id
+            LEFT JOIN gt ON t.id_gt=gt.id
+            WHERE t.id_tahun_ajaran=?`,
+            args: [tahun]
+        })
+        return result.rows
+    },
     byGt: async (idGt) => {
         const result = await db.execute({
-            sql: `SELECT t.*, a.keterangan, pjgt.nama_madrasah, pjgt.nama as nama_pjgt, gt.nama as nama_gt
+            sql: `SELECT t.*,t.id as id_tugas, a.keterangan, pjgt.nama_madrasah, pjgt.nama as nama_pjgt, gt.nama as nama_gt
             FROM tugas t
             LEFT JOIN tahun_ajaran a ON t.id_tahun_ajaran=a.id
             LEFT JOIN pjgt ON t.id_pjgt=pjgt.id

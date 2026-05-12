@@ -21,6 +21,26 @@ export const pjgtService = {
         });
         return result.rows[0]
     },
+    byTahun: async (tahun) => {
+        const result = await db.execute({
+            sql: "SELECT * FROM pjgt WHERE id_tahun_ajaran=?",
+            args: [tahun]
+        });
+        return result.rows
+    },
+    listGt: async (id) => {
+        const result = await db.execute({
+             sql: `SELECT t.*,t.id as id_tugas, a.keterangan, pjgt.nama_madrasah, pjgt.nama as nama_pjgt, gt.nama as nama_gt, gt.nim, gt.hp,gt.alamat, gt.tempat_lahir, gt.tanggal_lahir
+            FROM tugas t
+            LEFT JOIN tahun_ajaran a ON t.id_tahun_ajaran=a.id
+            LEFT JOIN pjgt ON t.id_pjgt=pjgt.id
+            LEFT JOIN gt ON t.id_gt=gt.id
+            WHERE t.id_pjgt=? and t.aktif=1`,
+     
+            args: [id]
+        });
+        return result.rows
+    },
     create: async (username, password, data) => {
         const id = uuidv4();
         await db.execute({

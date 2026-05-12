@@ -112,22 +112,56 @@ export const laporanGtController = {
         }
     },
     create: async (req, res) => {
-        try {
-            const idGt = req.user.id;
-            const tugas = await tugasService.byGt(idGt);
-            console.log('tugas ', tugas);
-            
-            if (!tugas || tugas.aktif == '0') {
-                res.status(400).json({ success: false, message: 'penugasan anda tidak ada atau sudah berakhir' })
-            }
-            const hasil = await laporanGtService.create(idGt, tugas.id, req.body);
-            res.status(201).json({ success: true, data: hasil })
-        } catch (error) {
-            if (error instanceof LibsqlError) {
-                res.status(500).json({ success: false, message: `libSQL Error: ${error.code} - ${error.message}` });
-            } else {
-                res.status(500).json({ success: false, message: `An unexpected error occurred: ${error}` });
-            }
+    // Taruh log di paling atas untuk memastikan request masuk ke fungsi ini
+    console.log(">>> [Controller] Request Create Laporan Masuk");
+
+    try {
+        // 1. Pastikan req.user ada (proteksi terhadap middleware yang bocor)
+        if (!req.user) {
+            console.error("!!! Error: req.user tidak ditemukan. Cek Middleware Auth.");
+            return res.status(401).json({ success: false, message: 'Unauthorized: No User Data' });
         }
+
+        const idGt = req.user.id;
+        console.log("ID Guru Tugas:", idGt);
+
+        // 2. Ambil data pendukung
+        const tugas = await tugasService.byGt(idGt);
+        const tahunAktif = await tahunAjaranService.getActive();
+
+        console.log('Data Tugas ditemukan:', tugas);
+        console.log('Tahun Ajaran Aktif:', tahunAktif);
+
+        // 3. Validasi Penugasan (WAJIB pakai RETURN)
+        if (!tugas || tugas.aktif == '0') {
+            console.warn("!!! Peringatan: Tugas tidak aktif atau tidak ditemukan");
+            return res.status(400).json({ 
+                success: false, 
+                message: 'penugasan anda tidak ada atau sudah berakhir' 
+            });
+        }
+
+        if (!tahunAktif) {
+            return res.status(400).json({ success: false, message: 'Tahun ajaran aktif tidak ditemukan' });
+        }
+
+        // 4. Proses Insert
+        console.log("Sedang mencoba insert ke Database...");
+        const hasil = await laporanGtService.create(idGt, tugas.id_tugas, tahunAktif.id, req.body);
+        
+        console.log("Insert Berhasil!");
+        return res.status(201).json({ success: true, data: hasil });
+
+    } catch (error) {
+        // Log error secara detail di terminal
+        console.error("--- CRASH DI CONTROLLER ---");
+        console.error(error); 
+        
+        if (error.name === 'LibsqlError') {
+            return res.status(500).json({ success: false, message: `libSQL Error: ${error.code} - ${error.message}` });
+        } 
+        
+        return res.status(500).json({ success: false, message: `Server Error: ${error.message}` });
     }
+}
 }
