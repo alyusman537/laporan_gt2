@@ -166,7 +166,7 @@ const initDb = async () => {
             wali_kelas TEXT,                     -- JSON string
             guru_fak TEXT,                       -- JSON string
             administrasi TEXT,                   -- Nullable
-            
+                       
             menangani_kegiatan  BOOLEAN DEFAULT 1,          -- 0 atau 1
             kegiatan_gt TEXT,                    -- JSON string
             
@@ -202,7 +202,7 @@ const initDb = async () => {
             bisyaroh_bln3 TEXT DEFAULT 0,     -- Menambahkan bln3 agar lengkap
             
             -- Narasi & Lainnya
-                       usulan_lain_lain TEXT,
+            usulan_lain_lain TEXT,
             
             tanggal_laporan TEXT                 -- ISO8601 String
              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -242,7 +242,8 @@ const initDb = async () => {
             sakit_hari TEXT,
             izin_hari TEXT,
             pulang_hari TEXT,
-            jam_wajib TEXT,
+            jam_wajib TEXT,                   
+            jam_formal TEXT,                   
             
             -- Hubungan & Alasan
             hubungan_pjgt TEXT,
