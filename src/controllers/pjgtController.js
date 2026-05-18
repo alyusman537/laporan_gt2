@@ -1,4 +1,5 @@
 import { pjgtService } from "../services/pjgtService.js";
+import { tahunAjaranService } from "../services/tahunAjaranService.js";
 import { passwordBcrypt } from "../utils/passwordBcrypt.js";
 import { LibsqlError } from "@libsql/client";
 
@@ -69,10 +70,11 @@ export const pjgtController = {
     },
     create: async (req, res) => {
         try {
+             const tahunAjaran =await tahunAjaranService.getActive();
             const idPjgt = await pjgtService.autoId();
             const password = passwordBcrypt.enkrip(idPjgt);
             
-            const hasil = await pjgtService.create(idPjgt, password, req.body);
+            const hasil = await pjgtService.create(idPjgt, password,tahunAjaran.id, req.body);
             res.status(201).json({ success: true, data: hasil });
         } catch (error) {
             if (error instanceof LibsqlError) {

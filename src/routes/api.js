@@ -50,8 +50,6 @@ router.post("/pjgt-status/:id", authenticate, roleMiddleware.admin, statusPjgtCo
 router.put("/pjgt-status/:id", authenticate, roleMiddleware.admin, statusPjgtController.updateStatus);
 
 
-
-
 router.get("/gt", authenticate, roleMiddleware.admin, gtController.all);
 router.get("/gt/:id", authenticate, roleMiddleware.admin, gtController.byId);
 router.get("/gt-tahun/:tahun", authenticate, roleMiddleware.admin, gtController.byTahun);
@@ -65,7 +63,6 @@ router.get("/tahun-ajaran/:id", authenticate, roleMiddleware.admin, tahunAjaranC
 router.post("/tahun-ajaran", authenticate, validateBody(["keterangan"]), roleMiddleware.admin, tahunAjaranController.create);
 router.put("/tahun-ajaran/:id", authenticate, validateBody(["keterangan"]), roleMiddleware.admin,tahunAjaranController.update);
 router.get("/tahun-ajaran-aktif/:id", authenticate, roleMiddleware.admin, tahunAjaranController.aktif);
-// chek aktif tahun ajaran bila aktif maka akan mengembalikan data tahun ajaran yang aktif, bila tidak ada yang aktif maka akan mengembalikan null
 router.get("/tahun-ajaran-check-aktif", authenticate,roleMiddleware.admin, tahunAjaranController.getAktif);
 
 router.get("/tugas", authenticate, roleMiddleware.admin, tugasController.all);
@@ -98,6 +95,7 @@ router.get("/gt-profile", authenticate, roleMiddleware.gt, gtController.myProfil
 router.get("/gt-profile-tempat", authenticate, roleMiddleware.gt, gtController.myProfileTempat);
 router.post("/gt/change-password", authenticate, roleMiddleware.gt, validateBody(["oldPassword", "newPassword", "confirmPassword"]), gtController.changePassword);
 router.post("/laporan-gt", authenticate, roleMiddleware.gt, laporanGtController.create);
+router.put("/laporan-gt", authenticate, roleMiddleware.gt, laporanGtController.update);
 // router.post("/laporan-gt", authenticate, roleMiddleware.gt, validateBody(laporanGtSchema), laporanGtController.create);
 router.get("/laporan-gt", authenticate, roleMiddleware.gt, laporanGtController.gt);
 

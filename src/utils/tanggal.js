@@ -9,7 +9,7 @@ export const tanggal = {
 
         const formattedHijri = `${day}-${month}-${year} `;
 
-        console.log(formattedDate);
+        // console.log(formattedDate);
         return {
             day,
             month,
@@ -37,25 +37,25 @@ export const tanggal = {
 
         // return formattedDate;
     },
-    tglIndo: () => {
-        const d = new Date();
+    // tglIndo: () => {
+    //     const d = new Date();
 
-        // Format lengkap Indonesia: "Senin, 11 Mei 2026"
-        const options = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        };
-        const datePart = d.toLocaleDateString('id-ID', options);
+    //     // Format lengkap Indonesia: "Senin, 11 Mei 2026"
+    //     const options = {
+    //         weekday: 'long',
+    //         year: 'numeric',
+    //         month: 'long',
+    //         day: 'numeric'
+    //     };
+    //     const datePart = d.toLocaleDateString('id-ID', options);
 
-        const hours = d.getHours().toString().padStart(2, '0');
-        const minutes = d.getMinutes().toString().padStart(2, '0');
-        const seconds = d.getSeconds().toString().padStart(2, '0');
+    //     const hours = d.getHours().toString().padStart(2, '0');
+    //     const minutes = d.getMinutes().toString().padStart(2, '0');
+    //     const seconds = d.getSeconds().toString().padStart(2, '0');
 
-        const formattedDate = `${datePart} ${hours}:${minutes}:${seconds}`;
+    //     const formattedDate = `${datePart} ${hours}:${minutes}:${seconds}`;
 
-        console.log(formattedDate); // Contoh: "Senin, 11 Mei 2026 09:25:25"
-        return formattedDate;
-    }
+    //     console.log(formattedDate); // Contoh: "Senin, 11 Mei 2026 09:25:25"
+    //     return formattedDate;
+    // }
 }

@@ -35,7 +35,7 @@ export const gtService = {
         return result.rows
     },
     create: async (nim, password, data) => {
-       const id = data.id || uuidv4();  
+       const id = uuidv4();  
        console.log("data yang akan digunakan:", { id, nim, password, ...data });
     
    const  args = [id, 
@@ -43,7 +43,7 @@ export const gtService = {
         password, 
         data.nama, 
         data.nik, 
-        data.idTahunAjaran, // Pastikan dari Flutter dikirim dengan key 'idTahunAjaran'
+        data.idTahunAjaran, 
         data.tempatLahir, 
         data.tanggalLahir, 
         data.alamat, 
@@ -58,7 +58,7 @@ export const gtService = {
         await db.execute({
             sql: `INSERT INTO gt (id, nim, password, nama, nik,id_tahun_ajaran,
             tempat_lahir, tanggal_lahir, alamat, hp, nama_ayah,
-            nama_ibu, nama_wali, hp_wali, asal_kelas, wali_kelas) VALUES VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            nama_ibu, nama_wali, hp_wali, asal_kelas, wali_kelas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             args: args
         })
        

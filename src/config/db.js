@@ -31,7 +31,7 @@ const initDb = async () => {
         args: [idAdmin, 'admin', 'admin', pass]
     });
 
-    const pjgtQuery = `CREATE TABLE IF NOT EXISTS pjgt (
+    const pjgtQuery = `CREATE TABLE IF NOT EXISTS pjgt (        
             id TEXT PRIMARY KEY,
             username TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
@@ -43,12 +43,19 @@ const initDb = async () => {
             nama_km TEXT NOT NULL,
             hp_km TEXT,
             nama_madrasah TEXT NOT NULL,
+            nama_ponpes TEXT ,
+            id_desa_madrasah TEXT NOT NULL,
+            id_desa_pjgt TEXT NOT NULL,
+            dusun_madrasah TEXT NOT NULL,
             alamat_madrasah TEXT NOT NULL,
+            dusun_pjgt TEXT NOT NULL,
+            alamat_pjgt TEXT NOT NULL,
             aktif BOOLEAN DEFAULT 1,            
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id)
             )`;
+
     await db.execute(pjgtQuery);
 
     const gtQuery = `CREATE TABLE IF NOT EXISTS gt (
@@ -72,7 +79,7 @@ const initDb = async () => {
             aktif BOOLEAN DEFAULT 1,           
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-             FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id)
+            FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id)
         )`;
     await db.execute(gtQuery);
 
@@ -98,7 +105,7 @@ const initDb = async () => {
             FOREIGN KEY (id_gt) REFERENCES gt (id)
         )`;
     await db.execute(tugasQuery);
-//////
+    //////
     const statusPJGTQuery = `CREATE TABLE IF NOT EXISTS statusPJGT (
             id TEXT PRIMARY KEY,
             id_tahun_ajaran TEXT NOT NULL,
@@ -113,154 +120,178 @@ const initDb = async () => {
         )`;
     await db.execute(statusPJGTQuery);
 
+    // const laporanPjgtQuery = `CREATE TABLE IF NOT EXISTS laporan_pjgt (
+    //         id TEXT PRIMARY KEY,
+    //         id_pjgt TEXT NOT NULL,
+    //         id_tugas TEXT NOT NULL,
+    //         bulan_ke INTEGER NOT NULL,
+    //         id_tahun_ajaran TEXT NOT NULL,
+    //         status_kelas BOOLEAN DEFAULT false,
+    //         wali_kelas TEXT NOT NULL,
+    //         guru_fak TEXT NOT NULL,
+    //         jenis_kelamin_murid TEXT NOT NULL,
+    //         kedisiplinan_gt BOOLEAN DEFAULT true,
+    //         keigatan_gt TEXT,
+    //         rambut_gt TEXT,
+    //         surat_izin_digunakan INTEGER DEFAULT 0,
+    //         pergi_gt TEXT,
+    //         pulang_gt TEXT,
+    //         pelanggaran_gt TEXT,
+    //         hubungan_pjgt TEXT,
+    //         hubungan_km TEXT,
+    //         hubungan_guru TEXT,
+    //         hubungan_murid_kelas TEXT,
+    //         hungan_murid_luar_kelas TEXT,
+    //         tanggapan_murid TEXT,
+    //         bisyaroh TEXT NOT NULL,
+    //         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    //         FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id),   
+    //         FOREIGN KEY (id_tugas) REFERENCES tugas (id),
+    //         FOREIGN KEY (id_pjgt) REFERENCES pjgt (id)
+    //     )`;
+    // await db.execute(laporanPjgtQuery);
     const laporanPjgtQuery = `CREATE TABLE IF NOT EXISTS laporan_pjgt (
-            id TEXT PRIMARY KEY,
+
+             id TEXT PRIMARY KEY,
             id_pjgt TEXT NOT NULL,
+            id_gt TEXT NOT NULL,
             id_tugas TEXT NOT NULL,
-            bulan_ke INTEGER NOT NULL,
-            id_tahun_ajaran TEXT NOT NULL,
-            status_kelas BOOLEAN DEFAULT false,
-            wali_kelas TEXT NOT NULL,
-            guru_fak TEXT NOT NULL,
-            jenis_kelamin_murid TEXT NOT NULL,
+             id_tahun_ajaran TEXT NOT NULL,
+            bulan_ke TEXT,
+            tahun TEXT,
+            status_kelas I BOOLEAN DEFAULT 1,               -- 0 atau 1
+            menangani_administrasi  BOOLEAN DEFAULT 1,      -- 0 atau 1
+            
+            -- Data JSON (Disimpan sebagai TEXT)
+            wali_kelas TEXT,                     -- JSON string
+            guru_fak TEXT,                       -- JSON string
+            administrasi TEXT,                   -- Nullable
+            
+            menangani_kegiatan  BOOLEAN DEFAULT 1,          -- 0 atau 1
+            kegiatan_gt TEXT,                    -- JSON string
+            
+            jk_murid TEXT,
             kedisiplinan_gt BOOLEAN DEFAULT true,
-            keigatan_gt TEXT,
+            pelanggaran_gt TEXT,
+            tindakan TEXT,
             rambut_gt TEXT,
             surat_izin_digunakan INTEGER DEFAULT 0,
-            pergi_gt TEXT,
-            pulang_gt TEXT,
-            pelanggaran_gt TEXT,
-            hubungan_pjgt TEXT,
-            hubungan_km TEXT,
-            hubungan_guru TEXT,
-            hubungan_murid_kelas TEXT,
-            hungan_murid_luar_kelas TEXT,
-            tanggapan_murid TEXT,
-            bisyaroh TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            sakit_hari TEXT DEFAULT 0,
+            izin_hari TEXT DEFAULT 0,
+            pulang_hari TEXT DEFAULT 0,
+            
+            -- Hubungan & Alasan (Rating)
+            hub_pjgt TEXT,
+            alasan_pjgt TEXT,
+            hub_km TEXT,
+            alasan_km TEXT,
+            hub_guru TEXT,
+            alasan_guru TEXT,
+            
+            hub_murid_dikelas TEXT,
+            alasan_murid_dikelas TEXT,
+            hub_murid_diluar_kelas TEXT,
+            alasan_murid_diluar_kelas TEXT,
+            hub_murid_secara_umum TEXT,
+            alasan_murid_secara_umum TEXT,
+            
+            -- Keuangan
+            bisyaroh TEXT DEFAULT 0,
+            bisyaroh_bln1 TEXT DEFAULT 0,
+            bisyaroh_bln2 TEXT DEFAULT 0,
+            bisyaroh_bln3 TEXT DEFAULT 0,     -- Menambahkan bln3 agar lengkap
+            
+            -- Narasi & Lainnya
+                       usulan_lain_lain TEXT,
+            
+            tanggal_laporan TEXT                 -- ISO8601 String
+             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id),   
             FOREIGN KEY (id_tugas) REFERENCES tugas (id),
             FOREIGN KEY (id_pjgt) REFERENCES pjgt (id)
-        )`;
+)`;
     await db.execute(laporanPjgtQuery);
 
-    // const laporanGtQuery = `CREATE TABLE IF NOT EXISTS laporan_gt (
-    //         id TEXT PRIMARY KEY,
-    //         id_gt TEXT NOT NULL,
-    //         id_tugas TEXT NOT NULL,
-    //         id_tahun_ajaran TEXT NOT NULL,
-    //         bulan_ke INTEGER NOT NULL,
-    //         tahun TEXT NOT NULL,            
-    //         status_kelas BOOLEAN DEFAULT false,
-    //         wali_kelas TEXT ,
-    //         guru_fak TEXT ,
-    //         jenis_kelamin_murid TEXT NOT NULL,
-    //         menangani_administrasi BOOLEAN DEFAULT false,
-    //         administrasi TEXT,            
-    //         kegiatan_gt TEXT,            
-    //         izin_gt TEXT,
-    //         pergi_gt TEXT,
-    //         pulang_gt TEXT,
-    //         hubungan_pjgt
-    //         alasan_pjgt TEXT,
-    //         hubungan_km TEXT,
-    //         alasan_kepala TEXT,
-    //         hubungan_guru TEXT,
-    //         alasan_guru TEXT,
-    //         masalah_penyelesaian TEXT,
-    //         tugas_mendatang TEXT,
-    //         tugas_belum_selesai TEXT,
-    //         usulan_lain_lain TEXT,            
-    //         bisyaroh TEXT NOT NULL,
-    //         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    //         FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id),  
-    //         FOREIGN KEY (id_tugas) REFERENCES tugas (id),
-    //         FOREIGN KEY (id_gt) REFERENCES gt (id)
-    //     )`;
-    // await db.execute(laporanGtQuery);
- const laporanGtQuery = `CREATE TABLE IF NOT EXISTS laporan_gt (
-   
-    id TEXT PRIMARY KEY,
-    id_gt TEXT NOT NULL,           -- Relasi ke Guru Tugas
-    id_tugas TEXT NOT NULL,        -- Relasi ke Tugas/Wilayah
-    id_tahun_ajaran TEXT NOT NULL, -- Relasi ke Tahun Ajaran
-    
-    -- Info Waktu
-    bulan_ke INTEGER NOT NULL,
-    tahun TEXT,                    -- Key 'tahun' dari Flutter
-    
-    -- Status & Administrasi
-    status_kelas INTEGER DEFAULT 0, -- Boolean (0/1)
-    menangani_administrasi INTEGER DEFAULT 0,
-    administrasi TEXT,             -- JSON String
-    administrasi_lainnya TEXT,             -- JSON String
-    wali_kelas TEXT,                -- JSON String
-    guru_fak TEXT,                  -- JSON String
-    
-    -- Kegiatan
-    menangani_kegiatan INTEGER DEFAULT 0,
-    kegiatan_gt TEXT,              -- JSON String
-    kegiatan_lainnya TEXT,              -- JSON String
-    
-    -- Murid
-    jenis_kelamin_murid TEXT,
-    
-    -- Absensi/Hari
-    sakit_hari TEXT,
-    izin_hari TEXT,
-    pulang_hari TEXT,
-    jam_wajib TEXT,
-    
-    -- Hubungan & Alasan
-    hubungan_pjgt TEXT,
-    alasan_pjgt TEXT,
-    hubungan_km TEXT,
-    alasan_kepala TEXT,
-    hubungan_guru TEXT,
-    alasan_guru TEXT,
-    hubungan_murid TEXT,
-    alasan_murid TEXT,
-    
-    -- Lain-lain
-    bisyaroh TEXT,
-    masalah_penyelesaian TEXT,
-    tugas_mendatang TEXT,
-    tugas_belum_selesai TEXT,
-    usulan_lain_lain TEXT,
-    
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    const laporanGtQuery = `CREATE TABLE IF NOT EXISTS laporan_gt (   
+            id TEXT PRIMARY KEY,
+            id_gt TEXT NOT NULL,           -- Relasi ke Guru Tugas
+            id_tugas TEXT NOT NULL,        -- Relasi ke Tugas/Wilayah
+            id_tahun_ajaran TEXT NOT NULL, -- Relasi ke Tahun Ajaran
+            
+            -- Info Waktu
+            bulan_ke INTEGER NOT NULL,
+            tahun TEXT,                    -- Key 'tahun' dari Flutter
+            
+            -- Status & Administrasi
+            status_kelas INTEGER DEFAULT 0, -- Boolean (0/1)
+            menangani_administrasi INTEGER DEFAULT 0,
+            administrasi TEXT,             -- JSON String
+            administrasi_lainnya TEXT,             -- JSON String
+            wali_kelas TEXT,                -- JSON String
+            guru_fak TEXT,                  -- JSON String
+            
+            -- Kegiatan
+            menangani_kegiatan INTEGER DEFAULT 0,
+            kegiatan_gt TEXT,              -- JSON String
+            kegiatan_lainnya TEXT,              -- JSON String
+            
+            -- Murid
+            jenis_kelamin_murid TEXT,
+            
+            -- Absensi/Hari
+            sakit_hari TEXT,
+            izin_hari TEXT,
+            pulang_hari TEXT,
+            jam_wajib TEXT,
+            
+            -- Hubungan & Alasan
+            hubungan_pjgt TEXT,
+            alasan_pjgt TEXT,
+            hubungan_km TEXT,
+            alasan_kepala TEXT,
+            hubungan_guru TEXT,
+            alasan_guru TEXT,
+            hubungan_murid TEXT,
+            alasan_murid TEXT,
+            
+            -- Lain-lain
+            bisyaroh TEXT,
+            masalah_penyelesaian TEXT,
+            tugas_mendatang TEXT,
+            tugas_belum_selesai TEXT,
+            usulan_lain_lain TEXT,
+            
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    -- Foreign Keys
-    FOREIGN KEY (id_gt) REFERENCES gt (id),
-    FOREIGN KEY (id_tugas) REFERENCES tugas (id),
-    FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id)
-)`;
-  await db.execute(laporanGtQuery);
+            -- Foreign Keys
+            FOREIGN KEY (id_gt) REFERENCES gt (id),
+            FOREIGN KEY (id_tugas) REFERENCES tugas (id),
+            FOREIGN KEY (id_tahun_ajaran) REFERENCES tahun_ajaran (id)
+    
+    )`;
+    await db.execute(laporanGtQuery);
 
-
-    const activity_logs =  `CREATE TABLE IF NOT EXISTS activity_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT, -- Menggunakan Auto Increment jika bukan UUID manual
-    user_id TEXT NOT NULL,                -- ID pengguna (FK)
-    role TEXT NOT NULL,                   -- Admin/GT/PJGT
-    action TEXT NOT NULL,                 -- LOGIN, LOGOUT, CREATE, dll
-    module TEXT NOT NULL,                 -- PENUGASAN, AUTH, dll
-    target_id TEXT,                       -- ID objek yang dimanipulasi (opsional)
-    metadata TEXT,                        -- String JSON detail perubahan
-    ip_address TEXT,                      -- Alamat IP
-    user_agent TEXT,                      -- Info perangkat/browser
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP -- Waktu kejadian otomatis
-);
+    const activity_logs = `CREATE TABLE IF NOT EXISTS activity_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, -- Menggunakan Auto Increment jika bukan UUID manual
+            user_id TEXT NOT NULL,                -- ID pengguna (FK)
+            role TEXT NOT NULL,                   -- Admin/GT/PJGT
+            action TEXT NOT NULL,                 -- LOGIN, LOGOUT, CREATE, dll
+            module TEXT NOT NULL,                 -- PENUGASAN, AUTH, dll
+            target_id TEXT,                       -- ID objek yang dimanipulasi (opsional)
+            metadata TEXT,                        -- String JSON detail perubahan
+            ip_address TEXT,                      -- Alamat IP
+            user_agent TEXT,                      -- Info perangkat/browser
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP -- Waktu kejadian otomatis
+        );
  
 
--- Indexing untuk mempercepat pencarian log di masa depan
-CREATE INDEX idx_user_id ON activity_logs (user_id);
-CREATE INDEX idx_action ON activity_logs (action);
-CREATE INDEX idx_created_at ON activity_logs (created_at);
-        )`;
-    await db.execute(activity_logs);
-};
+        -- Indexing untuk mempercepat pencarian log di masa depan
+        CREATE INDEX idx_user_id ON activity_logs (user_id);
+        CREATE INDEX idx_action ON activity_logs (action);
+        CREATE INDEX idx_created_at ON activity_logs (created_at);
+                )`;
+            await db.execute(activity_logs);
+        };
 
 initDb();
-
-
 export default db;

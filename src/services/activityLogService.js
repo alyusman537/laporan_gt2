@@ -165,14 +165,14 @@ export const activityLogService = {
         }
     },
 
-    update: async (data, id) => {
-        const tanggalJam = tanggal.getYmdhis();
-        await db.execute({
-            sql: `UPDATE tugas SET id_tahun_ajaran=?, id_pjgt=?, id_gt=?, jenis_penugasan=?, updated_at=? WHERE id=?`,
-            args: [data.idTahunAjaran, data.idPjgt, data.idGt, data.jenisPenugasan, tanggalJam, id]
-        })
-        return { id: id, ...data }
-    },
+    // update: async (data, id) => {
+    //     const tanggalJam = tanggal.getYmdhis();
+    //     await db.execute({
+    //         sql: `UPDATE tugas SET id_tahun_ajaran=?, id_pjgt=?, id_gt=?, jenis_penugasan=?, updated_at=? WHERE id=?`,
+    //         args: [data.idTahunAjaran, data.idPjgt, data.idGt, data.jenisPenugasan, tanggalJam, id]
+    //     })
+    //     return { id: id, ...data }
+    // },
     delete: async () => {
 
         await db.execute({

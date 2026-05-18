@@ -44,7 +44,9 @@ export const tugasService = {
             LEFT JOIN tahun_ajaran a ON t.id_tahun_ajaran=a.id
             LEFT JOIN pjgt ON t.id_pjgt=pjgt.id
             LEFT JOIN gt ON t.id_gt=gt.id
-            WHERE t.id_gt=? and t.aktif=1`,
+            WHERE t.id_gt=? and t.aktif=1
+            LIMIT 1
+            `,
             args: [idGt]
         })
         return result.rows[0]

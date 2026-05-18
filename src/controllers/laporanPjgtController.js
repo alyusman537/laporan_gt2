@@ -113,21 +113,35 @@ export const laporanPjgtController = {
     },
     create: async (req, res) => {
         try {
-            const idGt = req.user.id;
-            const tugas = await tugasService.byGt(idGt);
-            console.log('tugas ', tugas);
-            
+            const id_pjgt = req.user.id;
+            const id_gt = req.body.id_gt;
+            const tugas = await tugasService.byPjgt(id_pjgt);
+            const tapel = await tahunAjaranService.getActive();
+            console.log('Data Tugas ditemukan:', req.body);
+            // console.log("data =", idGt, tugas.id, tapel.id, tapel.keterangan);
+
+            // PENTING: Tambahkan return agar tidak lanjut ke kode di bawahnya
             if (!tugas || tugas.aktif == '0') {
-                res.status(400).json({ success: false, message: 'penugasan anda tidak ada atau sudah berakhir' })
+                return res.status(400).json({
+                    success: false,
+                    message: 'Penugasan Anda tidak ada atau sudah berakhir'
+                });
             }
-            const hasil = await laporanPjgtService.create(idGt, tugas.id, req.body);
-            res.status(201).json({ success: true, data: hasil })
+            const hasil = await laporanPjgtService.create({
+                id_pjgt: req.user.id,
+                id_gt: req.body.id_gt,
+                id_tugas: tugas.id,
+                id_tahun_ajaran: tapel.id,
+                data: req.body
+            });
+
+            return res.status(201).json({ success: true, data: hasil });
         } catch (error) {
+            console.error(error);
             if (error instanceof LibsqlError) {
-                res.status(500).json({ success: false, message: `libSQL Error: ${error.code} - ${error.message}` });
-            } else {
-                res.status(500).json({ success: false, message: `An unexpected error occurred: ${error}` });
+                return res.status(500).json({ success: false, message: `libSQL Error: ${error.code}` });
             }
+            return res.status(500).json({ success: false, message: `Server Error: ${error.message}` });
         }
     }
 }
